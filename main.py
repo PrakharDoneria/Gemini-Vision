@@ -18,18 +18,18 @@ VISION_TEMPERATURE = float(VISION_TEMPERATURE)
 def hello_world():
     return '<h1>Hello, World!</h1>'
 
-@app.route('/gemini/vision')
+@app.route('/vision')  # Changed route here
 def vision():
     try:
         url = request.args.get('url')
         prompt = request.args.get('prompt')
         if url is None:
             return jsonify({'error': 'URL parameter is missing'}), 400
-
+        
         response = requests.get(url)
         if response.status_code != 200:
             return jsonify({'error': 'Failed to fetch image from URL'}), 400
-
+        
         return { "answer": get_pro_llm_response(response.content, prompt) }
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -85,10 +85,11 @@ def get_pro_llm_response(img, prompt):
         response = requests.post(gemini_url, json=data, headers=headers)
         if response.status_code != 200:
             return jsonify({'error': 'Failed to get response from Gemini API'}), 500
-
+        
         return response.json()['candidates'][0]['content']['parts'][0]['text']
     except Exception as e:
         return str(e)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
+        
