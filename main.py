@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 import requests
 import base64
 import os
+from flask_cors import CORS
 
 app = Flask('app')
+CORS(app)
 
 API_TOKEN = os.getenv('API_TOKEN')
 VISION_TEMPERATURE = os.getenv('VISION_TEMPERATURE')
